@@ -1,4 +1,4 @@
-util-obj-y = osdep.o cutils.o unicode.o qemu-timer-common.o
+util-obj-y = osdep.o cutils.o unicode.o qemu-timer-common.o god.o
 util-obj-y += bufferiszero.o
 util-obj-y += lockcnt.o
 util-obj-y += aiocb.o async.o aio-wait.o thread-pool.o qemu-timer.o

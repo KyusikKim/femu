@@ -553,6 +553,12 @@ static void bdrv_next_reset(BdrvNextIterator *it)
     };
 }
 
+BdrvChild *blk_child(BlockBackend *blk)
+{
+    BlockDriverState *bs = blk_bs(blk);
+    return bs ? bs->file : NULL;
+}
+
 BlockDriverState *bdrv_first(BdrvNextIterator *it)
 {
     bdrv_next_reset(it);

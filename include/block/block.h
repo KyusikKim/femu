@@ -464,6 +464,7 @@ typedef struct BdrvNextIterator {
     BlockDriverState *bs;
 } BdrvNextIterator;
 
+BdrvChild *blk_child(BlockBackend *blk);
 BlockDriverState *bdrv_first(BdrvNextIterator *it);
 BlockDriverState *bdrv_next(BdrvNextIterator *it);
 void bdrv_next_cleanup(BdrvNextIterator *it);
