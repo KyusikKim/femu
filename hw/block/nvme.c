@@ -2834,7 +2834,7 @@ static void nvme_init_pci(NvmeCtrl *n)
     }
 }
 
-static void nvme_init(PCIDevice *pci_dev, Error **errp)
+static void nvme_realize(PCIDevice *pci_dev, Error **errp)
 {
     NvmeCtrl *n = NVME(pci_dev);
     int64_t bs_size;
@@ -2845,8 +2845,8 @@ static void nvme_init(PCIDevice *pci_dev, Error **errp)
     }
 
     bs_size = blk_getlength(n->conf.blk);
-    printf("Coperd,bs_size=%" PRId64 "\n", bs_size);
     if (bs_size < 0) {
+        error_setg(errp, "could not get backing file size");
         return;
     }
 
@@ -2969,11 +2969,13 @@ static void nvme_class_init(ObjectClass *oc, void *data)
     DeviceClass *dc = DEVICE_CLASS(oc);
     PCIDeviceClass *pc = PCI_DEVICE_CLASS(oc);
 
-    pc->realize = nvme_init;
+    pc->realize = nvme_realize;
     pc->exit = nvme_exit;
     pc->class_id = PCI_CLASS_STORAGE_EXPRESS;
     // Coperd: change from PCI_VENDOR_ID_INTEL to 0x1d1d for OCSSD
     pc->vendor_id = 0x1d1d;
+    pc->device_id = 0x5845;
+    pc->revision = 2;
     //pc->is_express = 1;
 
     set_bit(DEVICE_CATEGORY_STORAGE, dc->categories);
@@ -3029,6 +3031,10 @@ static const TypeInfo nvme_info = {
     .instance_size = sizeof(NvmeCtrl),
     .class_init    = nvme_class_init,
     .instance_init = nvme_instance_init,
+    .interfaces = (InterfaceInfo[]) {
+        { INTERFACE_PCIE_DEVICE },
+        { }
+    },
 };
 
 static void nvme_register_types(void)
